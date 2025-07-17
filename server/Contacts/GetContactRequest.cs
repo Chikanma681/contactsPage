@@ -1,3 +1,5 @@
+namespace ContactsPage.Data;
+
 public class GetContactRequest
 {
     public int Id { get; set; }

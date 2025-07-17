@@ -1,4 +1,6 @@
-public class GetAllContactsRequests
+namespace ContactsPage.Data;
+
+public class GetAllContactsRequest
 {
     public int? Page { get; set; }
     public int? RecordsPerPage { get; set; }

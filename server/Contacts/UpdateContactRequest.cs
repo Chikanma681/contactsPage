@@ -1,3 +1,5 @@
+namespace ContactsPage.Data;
+
 public class UpdateContactRequest
 {
     public string? FirstName { get; set; }
