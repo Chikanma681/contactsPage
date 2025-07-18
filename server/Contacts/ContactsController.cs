@@ -36,8 +36,7 @@ public class ContactsController: BaseController
         }
 
         var contacts = await query.ToArrayAsync();
-
-        return Ok(contacts);
+        return Ok(contacts.Select(ContactToGetContactResponse));
     }
 
     [HttpGet("{id:int}")]
@@ -50,7 +49,8 @@ public class ContactsController: BaseController
             return NotFound();
         }
 
-        return Ok(contacts);
+        var response = ContactToGetContactResponse(contacts);
+        return Ok(response);
 
     }
     
@@ -127,7 +127,24 @@ public class ContactsController: BaseController
         await _dbContext.SaveChangesAsync();
 
         return NoContent();
+    }   
+
+    private static GetContactResponse ContactToGetContactResponse(Contact contact)
+    {
+        return new GetContactResponse
+        {
+            Id = contact.Id,
+            FirstName = contact.FirstName,
+            LastName = contact.LastName,
+            Email = contact.Email,
+            Phone = contact.Phone,
+            Address = contact.Address,
+            City = contact.City,
+            State = contact.State,
+            ZipCode = contact.ZipCode,
+            Country = contact.Country
+        };
     }
     
-    
+
 }
