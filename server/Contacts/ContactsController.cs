@@ -13,6 +13,13 @@ public class ContactsController: BaseController
         _logger = logger;
     }
 
+    
+    /// <summary>
+    /// Gets all contacts with optional filtering and pagination
+    /// </summary>
+    /// <param name="request">Query parameters for filtering and pagination</param>
+    /// <returns>List of contacts</returns>
+    /// <response code="200">Returns the list of contacts</response>
     [HttpGet]
     public async Task<IActionResult> GetAllContacts([FromQuery] GetAllContactsRequest request)
     {
@@ -41,6 +48,13 @@ public class ContactsController: BaseController
         return Ok(contacts.Select(ContactToGetContactResponse));
     }
 
+    /// <summary>
+    /// Gets a specific contact by ID
+    /// </summary>
+    /// <param name="id">The contact ID</param>
+    /// <returns>Contact details</returns>
+    /// <response code="200">Returns the contact</response>
+    /// <response code="404">Contact not found</response>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetContact([FromRoute] int id)
     {
@@ -56,7 +70,13 @@ public class ContactsController: BaseController
 
     }
     
-
+    /// <summary>
+    /// Creates a new contact
+    /// </summary>
+    /// <param name="contact">Contact details to create</param>
+    /// <returns>Created contact</returns>
+    /// <response code="201">Contact created successfully</response>
+    /// <response code="400">Invalid contact data</response>
     [HttpPost]
     public async Task<IActionResult> CreateContact([FromBody] CreateContactRequest contact)
     {
@@ -84,6 +104,15 @@ public class ContactsController: BaseController
         return CreatedAtAction(nameof(GetContact), new { id = newContact.Id }, contact);
     }
 
+    /// <summary>
+    /// Updates an existing contact
+    /// </summary>
+    /// <param name="id">Contact ID to update</param>
+    /// <param name="contact">Updated contact details</param>
+    /// <returns>No content</returns>
+    /// <response code="204">Contact updated successfully</response>
+    /// <response code="400">Invalid contact data</response>
+    /// <response code="404">Contact not found</response>
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateContact([FromRoute] int id, [FromBody] UpdateContactRequest contact)
     {
@@ -119,6 +148,13 @@ public class ContactsController: BaseController
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a contact
+    /// </summary>
+    /// <param name="id">Contact ID to delete</param>
+    /// <returns>No content</returns>
+    /// <response code="204">Contact deleted successfully</response>
+    /// <response code="404">Contact not found</response>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> RemoveContact([FromRoute] int id)
     {
