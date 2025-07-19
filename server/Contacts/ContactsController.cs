@@ -6,9 +6,11 @@ public class ContactsController: BaseController
 {
     private readonly ContactsDbContext _dbContext;
 
-    public ContactsController(ContactsDbContext dbContext)
+    private readonly ILogger<ContactsController> _logger;
+    public ContactsController(ContactsDbContext dbContext, ILogger<ContactsController> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -86,8 +88,10 @@ public class ContactsController: BaseController
     public async Task<IActionResult> UpdateContact([FromRoute] int id, [FromBody] UpdateContactRequest contact)
     {
 
+        _logger.LogInformation("Updating contact with ID: {Id}", id);
         if (contact == null)
         {
+            _logger.LogWarning("Employee with ID {Id} is not found.", id);
             return BadRequest("Contact cannot be null.");
         }
 
@@ -111,6 +115,7 @@ public class ContactsController: BaseController
         _dbContext.Contacts.Update(existingContact);
         
         await _dbContext.SaveChangesAsync();
+         _logger.LogInformation("Employee with ID: {EmployeeId} successfully updated", id);
         return NoContent();
     }
 
