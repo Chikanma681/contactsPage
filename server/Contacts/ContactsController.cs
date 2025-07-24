@@ -1,16 +1,26 @@
 using ContactsPage.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
 
 public class ContactsController: BaseController
 {
     private readonly ContactsDbContext _dbContext;
-
     private readonly ILogger<ContactsController> _logger;
-    public ContactsController(ContactsDbContext dbContext, ILogger<ContactsController> logger)
+    private readonly IValidator<CreateContactRequest> _createValidator;
+    private readonly IValidator<UpdateContactRequest> _updateValidator;
+
+    public ContactsController(
+        ContactsDbContext dbContext, 
+        ILogger<ContactsController> logger,
+        IValidator<CreateContactRequest> createValidator,
+        IValidator<UpdateContactRequest> updateValidator
+        )
     {
         _dbContext = dbContext;
         _logger = logger;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
 
     
@@ -85,6 +95,16 @@ public class ContactsController: BaseController
             return BadRequest("Contact cannot be null.");
         }
 
+        var validationResult = await _createValidator.ValidateAsync(contact);
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+            return BadRequest(ModelState);
+        }
+
         var newContact = new Contact
         {
             FirstName = contact.FirstName,
@@ -116,14 +136,22 @@ public class ContactsController: BaseController
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateContact([FromRoute] int id, [FromBody] UpdateContactRequest contact)
     {
-
         _logger.LogInformation("Updating contact with ID: {Id}", id);
         if (contact == null)
         {
-            _logger.LogWarning("Employee with ID {Id} is not found.", id);
+            _logger.LogWarning("Contact with ID {Id} is not found.", id);
             return BadRequest("Contact cannot be null.");
         }
-
+        _logger.LogInformation("Validating contact with ID: {Id}", id);
+        var validationResult = await _updateValidator.ValidateAsync(contact);
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+            return BadRequest(ModelState);
+        }
 
         Contact? existingContact = await _dbContext.Contacts.FindAsync(id);
         if (existingContact == null)
