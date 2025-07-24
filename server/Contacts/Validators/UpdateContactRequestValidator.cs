@@ -1,23 +1,21 @@
 using FluentValidation;
 using ContactsPage.Data;
 
-namespace ContactsPage.Contacts;
+namespace ContactsPage.Validators;
 
-public class CreateContactRequestValidator : AbstractValidator<CreateContactRequest>
+public class UpdateContactRequestValidator : AbstractValidator<UpdateContactRequest>
 {
-    public CreateContactRequestValidator()
+    public UpdateContactRequestValidator()
     {
-        RuleFor(x=>x.FirstName)
-            .NotEmpty()
-            .WithMessage("First name is required")
+        RuleFor(x => x.FirstName)
             .Length(1, 50)
-            .WithMessage("First name must be between 1 and 50 characters");
+            .WithMessage("First name must be between 1 and 50 characters")
+            .When(x => !string.IsNullOrEmpty(x.FirstName));
 
         RuleFor(x => x.LastName)
-            .NotEmpty()
-            .WithMessage("Last name is required")
             .Length(1, 50)
-            .WithMessage("Last name must be between 1 and 50 characters");
+            .WithMessage("Last name must be between 1 and 50 characters")
+            .When(x => !string.IsNullOrEmpty(x.LastName));
 
         RuleFor(x => x.Email)
             .EmailAddress()

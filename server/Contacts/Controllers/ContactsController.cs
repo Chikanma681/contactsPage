@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 
+namespace ContactsPage.Controllers;
+
 public class ContactsController: BaseController
 {
     private readonly ContactsDbContext _dbContext;
