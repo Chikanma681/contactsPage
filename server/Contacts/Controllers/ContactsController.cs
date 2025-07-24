@@ -145,6 +145,7 @@ public class ContactsController: BaseController
             return BadRequest("Contact cannot be null.");
         }
         _logger.LogInformation("Validating contact with ID: {Id}", id);
+        
         var validationResult = await _updateValidator.ValidateAsync(contact);
         if (!validationResult.IsValid)
         {
