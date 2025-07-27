@@ -1,7 +1,5 @@
 using ContactsPage.Data;
 
-
-// contains seeding logic when the application starts
 public static class SeedData
 {
     public static void Seed(IServiceProvider serviceProvider)

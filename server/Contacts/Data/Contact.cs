@@ -1,6 +1,6 @@
 namespace ContactsPage.Data;
 
-public class Contact 
+public class Contact:AuditFields 
 {
     public int Id { get; set; }
     public required string FirstName { get; set; }
