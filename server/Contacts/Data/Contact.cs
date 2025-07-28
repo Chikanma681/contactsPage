@@ -12,4 +12,8 @@ public class Contact:AuditFields
     public string? State { get; set; }
     public string? ZipCode { get; set; }
     public string? Country { get; set; }
+
+
+    public int? CategoryId { get; set; }
+    public ContactCategory? Category { get; set; }
 }
