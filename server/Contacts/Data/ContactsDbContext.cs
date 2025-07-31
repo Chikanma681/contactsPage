@@ -19,4 +19,36 @@ public class ContactsDbContext: DbContext
             .HasForeignKey(c => c.CategoryId)
             .OnDelete(DeleteBehavior.SetNull);
     }
+
+    public override int SaveChanges()
+    {
+        UpdateAuditFields();
+        return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        UpdateAuditFields();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void UpdateAuditFields()
+    {
+        var entries = ChangeTracker.Entries<AuditFields>();
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedBy = "TheCreateUser"; // Replace with actual user context
+                entry.Entity.CreatedOn = DateTime.UtcNow;
+            }
+
+            if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.LastModifiedBy = "TheUpdateUser"; // Replace with actual user context
+                entry.Entity.LastModifiedOn = DateTime.UtcNow;
+            }
+        }
+    }
 }
